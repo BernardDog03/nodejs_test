@@ -6,22 +6,29 @@ environment {
 }
 
 stages {
-    stage('Checkout') {
-        steps {
-            https://github.com/BernardDog03/nodejs_test.git
-        }
-    }
-
-    stage('Install Dependencies') {
-        steps {
-            sh 'npm install'
-        }
-    }
-
-    stage('Run Tests') {
-        steps {
-            sh 'npm test'
-        }
-    }
+	stage('Parallel Execution'){
+		parallel {
+			stage('Test on NodeJS 14') {
+				steps {
+					script {
+						env.NODE_VERSION = '14'
+						sh 'nvm install 14'
+						sh 'npm install'
+						sh 'npm test'
+					}
+				}
+			}
+			stage('Test on NodeJS 16') {
+				steps {
+					script {
+						env.NODE_VERSION = '16'
+						sh 'nvm install 16'
+						sh 'npm install'
+						sh 'npm test'
+					}
+				}
+			}
+		}
+	}
 }
 }
